@@ -156,6 +156,18 @@ export async function getClient() {
       auth = `${config.get('es_username')}:${config.get('es_password')}@`;
     }
 
+    let proxy_auth = '';
+
+    if (config.get('es_proxy_username') && config.get('es_proxy_password')) {
+      proxy_auth = `${config.get('es_proxy_username')}:${config.get('es_proxy_password')}@`;
+    }
+
+    let proxy_body = '';
+
+    if (config.get('es_proxy_scheme') && config.get('es_proxy_host') && config.get('es_proxy_port')) {
+      proxy_body = `${config.get('es_proxy_scheme')}://${proxy_auth}${config.get('es_proxy_host')}:${config.get('es_proxy_port')}`;
+    }
+
     if (es_version === 5) {
 
       // Elasticsearch 5.x
@@ -177,7 +189,8 @@ export async function getClient() {
       // Elasticsearch 7.x
       const client7 = new elasticsearch7.Client({
         node: [ `${scheme}://${auth}${config.get('es_host')}:${config.get('es_port')}`],
-        ssl: ssl_body
+        ssl: ssl_body,
+        proxy: proxy_body
       });
       return client7;
     } else if (es_version == 8) {
@@ -185,7 +198,8 @@ export async function getClient() {
       //TODO: Elasticsearch 8.x
       //const client8 = new elasticsearch8.Client({
       //  node: [ `${scheme}://${auth}${config.get('es_host')}:${config.get('es_port')}`],
-      //  ssl: ssl_body
+      //  ssl: ssl_body,
+      //  proxy: proxy_body
       //});
       //return client8;
     }

@@ -82,6 +82,11 @@ You can use the following config options:
   "es_port": 9200, // Port for above
   "es_username": "", // Option basic-auth username and password for Elasticsearch
   "es_password": "", // Option basic-auth username and password for Elasticsearch
+  "es_proxy_scheme": "", // Proxy Connection scheme(http or https) for Elasticsearch 
+  "es_proxy_host": "", // Proxy Connection host for Elasticsearch
+  "es_proxy_port": "", // EProxy Connection port for Elasticsearch
+  "es_proxy_username": "", // Proxy Connection username for Elasticsearch
+  "es_proxy_password": "", // Proxy Connection assword for Elasticsearch
   "es_ssl": true, // Enable/Disable SSL
   "es_ca_certs": "/etc/ssl/elasticsearch/ca", // Path to ca for ElasticSearch (SSL must be enabled)
   "es_client_cert": "/etc/ssl/elasticsearch/cert", // Path to cert for ElasticSearch (SSL must be enabled)
