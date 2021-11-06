@@ -1,4 +1,3 @@
-import elasticsearch5 from 'es5';
 import elasticsearch6 from 'es6';
 import elasticsearch7 from 'es7';
 import elasticsearch8 from 'es8';
