@@ -1,5 +1,5 @@
 FROM python:3.9-alpine3.14 as ea2
-ARG ELASTALERT_VERSION=2.2.2
+ARG ELASTALERT_VERSION=2.2.3
 ENV ELASTALERT_VERSION=${ELASTALERT_VERSION}
 ARG ELASTALERT_URL=https://github.com/jertel/elastalert2/archive/refs/tags/$ELASTALERT_VERSION.zip
 ENV ELASTALERT_URL=${ELASTALERT_URL}
@@ -48,8 +48,10 @@ WORKDIR /opt/elastalert
 
 RUN pip3 install --no-cache-dir cryptography --user
 RUN pip3 install --no-cache-dir -r requirements.txt --user
+# Fix PytzUsageWarning
+RUN pip3 install --no-cache-dir tzlocal==2.1 --user
 
-FROM node:16.11.1-alpine3.14
+FROM node:14.18.1-alpine3.14
 LABEL maintainer="John Susek <john@johnsolo.net>"
 ENV TZ Etc/UTC
 ENV PATH /home/node/.local/bin:$PATH
