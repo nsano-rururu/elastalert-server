@@ -105,7 +105,6 @@ export async function clientSearch(index, type, qs, request, response) {
         // async-style (sugar syntax on top of promises)
         const result = await client.search({
             index: index,
-            type: type,
             from: request.query.from || 0,
             size: request.query.size || 100,
             query: {
