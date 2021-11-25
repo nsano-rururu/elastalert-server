@@ -15,7 +15,7 @@ export default async function searchHandler(request, response) {
         // async-style (sugar syntax on top of promises)
         const result = await client.search({
           index: request.params.index,
-          body: request.body
+          document: request.body
         })
         response.send(result);
       } catch(err) {
