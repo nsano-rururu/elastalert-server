@@ -1,6 +1,6 @@
 import { getClient } from '../../common/elasticsearch_client';
 
-export default async function indicesHandler(request, response) {
+export default async function indicesHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
@@ -8,9 +8,12 @@ export default async function indicesHandler(request, response) {
   try {
     const client = await getClient();
 
+    // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
     client.cat.indices({
       h: ['index']
-    }, (err, {body}) => {
+    }, (err: any, {
+      body
+    }: any) => {
       if (err)  {
         response.send({
           error: err

@@ -1,4 +1,6 @@
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'path' or its corresponding typ... Remove this comment to see the full error message
 import {join as joinPath, normalize as normalizePath, extname as pathExtension} from 'path';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'fs-e... Remove this comment to see the full error message
 import fs from 'fs-extra';
 import FileSystem from '../../common/file_system';
 import config from '../../common/config';
@@ -9,6 +11,8 @@ import {TemplateNotFoundError, TemplateNotReadableError, TemplateNotWritableErro
 let logger = new Logger('TemplatesController');
 
 export default class TemplatesController {
+  _fileSystemController: any;
+  templatesFolder: any;
   constructor() {
     this._fileSystemController = new FileSystem();
     this.templatesFolder = this._getTemplatesFolder();
@@ -18,39 +22,39 @@ export default class TemplatesController {
     const self = this;
     return new Promise(function(resolve, reject) {
       self._fileSystemController.readDirectoryRecursive(self.templatesFolder)
-        .then(function(templates) {
+        .then(function(templates: any) {
           resolve(templates);
         })
-        .catch(function(error) {
+        .catch(function(error: any) {
           logger.warn(`The requested folder (${self.templatesFolder}) couldn't be found / read by the server. Error:`, error);
           reject(new TemplatesFolderNotFoundError(self.templatesFolder));
         });
     });
   }
 
-  getTemplates(path) {
+  getTemplates(path: any) {
     const self = this;
     const fullPath = joinPath(self.templatesFolder, path);
     return new Promise(function (resolve, reject) {
       self._fileSystemController.readDirectory(fullPath)
-        .then(function (directoryIndex) {
+        .then(function (directoryIndex: any) {
 
-          directoryIndex.templates = directoryIndex.files.filter(function (fileName) {
+          directoryIndex.templates = directoryIndex.files.filter(function (fileName: any) {
             return pathExtension(fileName).toLowerCase() === '.yaml';
-          }).map(function (fileName) {
+          }).map(function (fileName: any) {
             return fileName.slice(0, -5);
           });
 
           delete directoryIndex.files;
           resolve(directoryIndex);
         })
-        .catch(function (error) {
+        .catch(function (error: any) {
 
           // Check if the requested folder is the templates root folder
           if (normalizePath(self.templatesFolder) === fullPath) {
 
             // Try to create the root folder
-            fs.mkdir(fullPath, { recursive: true }, function (error) {
+            fs.mkdir(fullPath, { recursive: true }, function (error: any) {
               if (error) {
                 reject(new TemplatesRootFolderNotCreatableError());
                 logger.warn(`The templates root folder (${fullPath}) couldn't be found nor could it be created by the file system.`);
@@ -66,7 +70,7 @@ export default class TemplatesController {
     });
   }
 
-  template(id) {
+  template(id: any) {
     const self = this;
     return new Promise(function (resolve, reject) {
       self._findTemplate(id)
@@ -74,12 +78,14 @@ export default class TemplatesController {
           console.log('template resolved');
           resolve({
             get: function () {
+              // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
               if (access.read) {
                 return self._getTemplate(id);
               }
               return self._getErrorPromise(new TemplateNotReadableError(id));
             },
-            edit: function (body) {
+            edit: function (body: any) {
+              // @ts-expect-error ts-migrate(2571) FIXME: Object is of type 'unknown'.
               if (access.write) {
                 return self._editTemplate(id, body);
               }
@@ -97,16 +103,16 @@ export default class TemplatesController {
     });
   }
 
-  createTemplate(id, content) {
+  createTemplate(id: any, content: any) {
     return this._editTemplate(id, content);
   }
 
-  _findTemplate(id) {
+  _findTemplate(id: any) {
     let fileName = id + '.yaml';
     const self = this;
     return new Promise(function (resolve, reject) {
       self._fileSystemController.fileExists(joinPath(self.templatesFolder, fileName))
-        .then(function (exists) {
+        .then(function (exists: any) {
           if (!exists) {
             reject();
           } else {
@@ -118,28 +124,28 @@ export default class TemplatesController {
             });
           }
         })
-        .catch(function (error) {
+        .catch(function (error: any) {
           reject(error);
         });
     });
   }
 
-  _getTemplate(id) {
+  _getTemplate(id: any) {
     const path = joinPath(this.templatesFolder, id + '.yaml');
     return this._fileSystemController.readFile(path);
   }
 
-  _editTemplate(id, body) {
+  _editTemplate(id: any, body: any) {
     const path = joinPath(this.templatesFolder, id + '.yaml');
     return this._fileSystemController.writeFile(path, body);
   }
 
-  _deleteTemplate(id) {
+  _deleteTemplate(id: any) {
     const path = joinPath(this.templatesFolder, id + '.yaml');
     return this._fileSystemController.deleteFile(path);
   }
 
-  _getErrorPromise(error) {
+  _getErrorPromise(error: any) {
     return new Promise(function (resolve, reject) {
       reject(error);
     }).catch((error) => {

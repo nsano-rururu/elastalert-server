@@ -5,11 +5,12 @@ import opensearch from '@opensearch-project/opensearch';
 //TODO: Elasticsearch 8.x
 //import elasticsearch8 from 'es8';
 
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'fs' or its corresponding type ... Remove this comment to see the full error message
 import fs from 'fs';
 import config from './config';
 import axios from 'axios';
 
-export function escapeLuceneSyntax(str) {
+export function escapeLuceneSyntax(str: any) {
   return [].map
     .call(str, char => {
       if (
@@ -63,19 +64,24 @@ export async function getClientVersion() {
     const agent  = {};
 
     if (config.get('es_ssl')) {
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'rejectUnauthorized' does not exist on ty... Remove this comment to see the full error message
       agent.rejectUnauthorized = config.get('ea_verify_certs');
 
       if (config.get('es_ca_certs')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'ca' does not exist on type '{}'.
         agent.ca = fs.readFileSync(config.get('es_ca_certs'));
       }
       if (config.get('es_client_cert')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'cert' does not exist on type '{}'.
         agent.cert = fs.readFileSync(config.get('es_client_cert'));
       }
       if (config.get('es_client_key')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'key' does not exist on type '{}'.
         agent.key = fs.readFileSync(config.get('es_client_key'));
       }
     }
 
+    // @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'require'. Do you need to install... Remove this comment to see the full error message
     const https = require('https');
     const httpsAgent = new https.Agent(agent);
     const result = 
@@ -90,16 +96,18 @@ export async function getClientVersion() {
 
 }
 
-export async function clientSearch(index, type, qs, request, response) {
+export async function clientSearch(index: any, type: any, qs: any, request: any, response: any) {
 
   try {
     const es_version = await getClientVersion();
     const client = await getClient();
 
+    // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
     if (es_version >= 7) {
       type = undefined;
     }
 
+    // @ts-expect-error ts-migrate(2532) FIXME: Object is possibly 'undefined'.
     client.search({
       index: index,
       type: type,
@@ -117,13 +125,15 @@ export async function clientSearch(index, type, qs, request, response) {
         },
         sort: [{ '@timestamp': { order: 'desc' } }]
       }
-    }, (err, {body}) => {
+    }, (err: any, {
+      body
+    }: any) => {
       if (err) {
         response.send({
           error: err
         });
       } else {
-        body.hits.hits = body.hits.hits.map(h => h._source);
+        body.hits.hits = body.hits.hits.map((h: any) => h._source);
         response.send(body.hits);
       }
     });
@@ -143,15 +153,19 @@ export async function getClient() {
 
     if (config.get('es_ssl')) {
       scheme = 'https';
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'rejectUnauthorized' does not exist on ty... Remove this comment to see the full error message
       ssl_body.rejectUnauthorized = config.get('ea_verify_certs');
 
       if (config.get('es_ca_certs')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'ca' does not exist on type '{}'.
         ssl_body.ca = fs.readFileSync(config.get('es_ca_certs'));
       }
       if (config.get('es_client_cert')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'cert' does not exist on type '{}'.
         ssl_body.cert = fs.readFileSync(config.get('es_client_cert'));
       }
       if (config.get('es_client_key')) {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'key' does not exist on type '{}'.
         ssl_body.key = fs.readFileSync(config.get('es_client_key'));
       }
     }

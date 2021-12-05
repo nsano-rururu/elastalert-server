@@ -3,7 +3,7 @@ import {sendRequestError} from '../../../common/errors/utils';
 
 let logger = new RouteLogger('/templates/:id', 'POST');
 
-export default function templatePostHandler(request, response) {
+export default function templatePostHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
@@ -12,7 +12,7 @@ export default function templatePostHandler(request, response) {
   let path = request.params.id + request.params[0];
 
   server.templatesController.template(path)
-    .then(function (template) {
+    .then(function (template: any) {
       template.edit(body)
         .then(function () {
           response.send({
@@ -21,12 +21,12 @@ export default function templatePostHandler(request, response) {
           });
           logger.sendSuccessful();
         })
-        .catch(function (error) {
+        .catch(function (error: any) {
           logger.sendFailed(error);
           sendRequestError(response, error);
         });
     })
-    .catch(function (error) {
+    .catch(function (error: any) {
       if (error.error === 'templateNotFound') {
         server.templatesController.createTemplate(path, body)
           .then(function () {
@@ -36,7 +36,7 @@ export default function templatePostHandler(request, response) {
               id: path
             });
           })
-          .catch(function (error) {
+          .catch(function (error: any) {
             logger.sendFailed(error);
             sendRequestError(response, error);
           });

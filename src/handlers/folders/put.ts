@@ -3,7 +3,7 @@ import {sendRequestError} from '../../common/errors/utils';
 
 let logger = new RouteLogger('/folders/:type/:path', 'PUT');
 
-export default function folderPostHandler(request, response) {
+export default function folderPostHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
@@ -19,7 +19,7 @@ export default function folderPostHandler(request, response) {
       });
       logger.sendSuccessful();
     })
-    .catch(function (error) {
+    .catch(function (error: any) {
       console.error(error);
       logger.sendFailed(error);
       sendRequestError(response, error);

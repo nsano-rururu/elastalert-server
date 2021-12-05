@@ -1,23 +1,24 @@
 import bunyan from './bunyan_instance';
 
 export default class Logger {
-  constructor (serviceName) {
+  serviceName: any;
+  constructor (serviceName: any) {
     this.serviceName = serviceName;
   }
 
-  info (...messages) {
+  info (...messages: any[]) {
     bunyan.info(this.serviceName + ': ', ...messages);
   }
 
-  warn (...messages) {
+  warn (...messages: any[]) {
     bunyan.warn(this.serviceName + ': ', ...messages);
   }
 
-  error (...messages) {
+  error (...messages: any[]) {
     bunyan.error(this.serviceName + ': ', ...messages);
   }
 
-  debug (...messages) {
+  debug (...messages: any[]) {
     bunyan.debug(this.serviceName + ': ', ...messages);
   }
 }

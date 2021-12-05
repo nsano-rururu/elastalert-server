@@ -1,25 +1,29 @@
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'fs' or its corresponding type ... Remove this comment to see the full error message
 import fs from 'fs';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'fs-e... Remove this comment to see the full error message
 import fs_extra from 'fs-extra';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'path' or its corresponding typ... Remove this comment to see the full error message
 import { join as joinPath } from 'path';
 import readdirp from 'readdirp';
 
 export default class FileSystem {
   constructor() { }
 
-  readDirectoryRecursive(path) {
+  readDirectoryRecursive(path: any) {
     return new Promise(function (resolve, reject) {
       try {        
-        let rules = [];
+        let rules: any = [];
         let stream = readdirp(path, { type: 'all', alwaysStat: true });
 
         stream
-          .on('warn', function (err) {
+          // @ts-expect-error ts-migrate(2339) FIXME: Property 'on' does not exist on type 'ReaddirpStre... Remove this comment to see the full error message
+          .on('warn', function (err: any) {
             reject(err);  
           })
-          .on('error', function (err) { 
+          .on('error', function (err: any) { 
             reject(err);
           })
-          .on('data', entry => {
+          .on('data', (entry: any) => {
             let path = entry.path.replace('.yaml', '');
             if (entry.stats.isDirectory()) {
               path += '/';
@@ -34,11 +38,11 @@ export default class FileSystem {
     });
   }
 
-  readDirectory(path) {
+  readDirectory(path: any) {
     const self = this;
     return new Promise(function (resolve, reject) {
       try {
-        fs.readdir(path, function (error, elements) {
+        fs.readdir(path, function (error: any, elements: any) {
           if (error) {
             reject(error);
           } else {
@@ -49,11 +53,13 @@ export default class FileSystem {
               resolve(directoryIndex);
             }
 
-            elements.forEach(function (element) {
-              fs.stat(joinPath(path, element), function (error, stats) {
+            elements.forEach(function (element: any) {
+              fs.stat(joinPath(path, element), function (error: any, stats: any) {
                 if (stats.isDirectory()) {
+                  // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
                   directoryIndex.directories.push(element);
                 } else if (stats.isFile()) {
+                  // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'any' is not assignable to parame... Remove this comment to see the full error message
                   directoryIndex.files.push(element);
                 }
 
@@ -71,54 +77,58 @@ export default class FileSystem {
     });
   }
 
-  directoryExists(path) {
+  directoryExists(path: any) {
     return this._exists(path);
   }
 
-  createDirectoryIfNotExists(pathToFolder) {
+  createDirectoryIfNotExists(pathToFolder: any) {
     let self = this;
 
     return new Promise(function (resolve, reject) {
       self.directoryExists(pathToFolder).then(function (exists) {
         if (!exists) {
-          fs.mkdir(pathToFolder, { recursive: true }, function (error) {
+          fs.mkdir(pathToFolder, { recursive: true }, function (error: any) {
             if (error) {
               reject(error);
             } else {
+              // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
               resolve();
             }
           });
         } else {
+          // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
           resolve();
         }
       });
     });
   }
 
-  deleteDirectory(path) {
+  deleteDirectory(path: any) {
     return new Promise(function (resolve, reject) {
-      fs_extra.remove(path, function (error) {
+      fs_extra.remove(path, function (error: any) {
+        // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         error ? reject(error) : resolve();
       });
     });
   }
 
-  fileExists(path) {
+  fileExists(path: any) {
     return this._exists(path);
   }
 
-  readFile(path) {
+  readFile(path: any) {
     return new Promise(function (resolve, reject) {
-      fs.readFile(path, 'utf8', function (error, content) {
+      fs.readFile(path, 'utf8', function (error: any, content: any) {
         error ? reject(error) : resolve(content);
       });
     });
   }
 
-  writeFile(path, content = '') {
+  writeFile(path: any, content = '') {
     return new Promise(function (resolve, reject) {
       try {
-        fs.writeFile(path, content, function (error) {
+        fs.writeFile(path, content, function (error: any) {
+          // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
           error ? reject(error) : resolve();
         });
       } catch (error) {
@@ -128,9 +138,10 @@ export default class FileSystem {
     });
   }
 
-  deleteFile(path) {
+  deleteFile(path: any) {
     return new Promise(function (resolve, reject) {
-      fs.unlink(path, function (error) {
+      fs.unlink(path, function (error: any) {
+        // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         error ? reject(error) : resolve();
       });
     });
@@ -143,10 +154,10 @@ export default class FileSystem {
     };
   }
 
-  _exists(path) {
+  _exists(path: any) {
     return new Promise(function (resolve, reject) {
       try {
-        fs.access(path, fs.F_OK, function (error) {
+        fs.access(path, fs.F_OK, function (error: any) {
           error ? resolve(false) : resolve(true);
         });
       } catch (error) {

@@ -10,7 +10,7 @@ const optionsSchema = Joi.object().keys({
   duration: Joi.number().min(1).default(1),
 }).default();
 
-function analyzeRequest(request) {
+function analyzeRequest(request: any) {
   if (!request.body) {
     return new BodyNotSendError();
   }
@@ -28,7 +28,7 @@ function analyzeRequest(request) {
   return body;
 }
 
-export default function silencePostHandler(request, response) {
+export default function silencePostHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
@@ -43,10 +43,10 @@ export default function silencePostHandler(request, response) {
   let path = request.params.path + request.params[0];
 
   server.silenceController.silenceRule(path, body.unit, body.duration)
-    .then(function (consoleOutput) {
+    .then(function (consoleOutput: any) {
       response.send(consoleOutput);
     })
-    .catch(function (consoleOutput) {
+    .catch(function (consoleOutput: any) {
       response.status(500).send(consoleOutput);
     });
 }

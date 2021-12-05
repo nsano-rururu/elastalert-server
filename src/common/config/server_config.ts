@@ -1,6 +1,9 @@
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'fs' or its corresponding type ... Remove this comment to see the full error message
 import fs from 'fs';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'path' or its corresponding typ... Remove this comment to see the full error message
 import path from 'path';
 import schema from './schema';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'obje... Remove this comment to see the full error message
 import resolvePath from 'object-resolve-path';
 import Logger from '../logger';
 
@@ -8,11 +11,15 @@ import Logger from '../logger';
 const configFile = 'config/config.json';
 const devConfigFile = 'config/config.dev.json';
 
+// @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'process'. Do you need to install... Remove this comment to see the full error message
 const configPath = path.join(process.cwd(), configFile);
+// @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'process'. Do you need to install... Remove this comment to see the full error message
 const devConfigPath = path.join(process.cwd(), devConfigFile);
 const logger = new Logger('Config');
 
 export default class ServerConfig {
+  _jsonConfig: any;
+  _waitList: any;
   constructor() {
     // ready() callbacks
     this._waitList = [];
@@ -27,7 +34,7 @@ export default class ServerConfig {
    * @param {String} key The key to load the value from.
    * @returns {*}
    */
-  get(key) {
+  get(key: any) {
     return resolvePath(this._jsonConfig, key);
   }
 
@@ -36,7 +43,7 @@ export default class ServerConfig {
    *
    * @param {Function} callback The callback to register.
    */
-  ready(callback) {
+  ready(callback: any) {
     this._waitList.push(callback);
   }
 
@@ -52,10 +59,11 @@ export default class ServerConfig {
     return new Promise(function (resolve) {
       self._getConfig().then(function (config) {
         self._validate(config);
+        // @ts-expect-error ts-migrate(2794) FIXME: Expected 1 arguments, but got 0. Did you forget to... Remove this comment to see the full error message
         resolve();
       });
     }).then(function () {
-      self._waitList.forEach(function (callback) {
+      self._waitList.forEach(function (callback: any) {
         callback();
       });
     });
@@ -104,11 +112,11 @@ export default class ServerConfig {
    * @returns {Promise} Promise returning true if the file was found and false otherwise.
    * @private
    */
-  _fileExists(filePath) {
+  _fileExists(filePath: any) {
     return new Promise(function (resolve) {
       // Check if the config file exists and has reading permissions
       try {
-        fs.access(filePath, fs.F_OK | fs.R_OK, function (error) {
+        fs.access(filePath, fs.F_OK | fs.R_OK, function (error: any) {
           if (error) {
             if (error.errno === -2) {
               logger.info(`No ${path.basename(filePath)} file was found in ${filePath}.`);
@@ -133,9 +141,9 @@ export default class ServerConfig {
    * @returns {Promise} Promise returning the config if successfully read. Rejects if reading the config failed.
    * @private
    */
-  _readFile(file) {
+  _readFile(file: any) {
     return new Promise(function (resolve, reject) {
-      fs.readFile(file, 'utf8', function (error, config) {
+      fs.readFile(file, 'utf8', function (error: any, config: any) {
         if (error) {
           logger.warn(`Unable to read config file in (${file}). Using default configuration. Error: `, error);
           reject();
@@ -152,7 +160,7 @@ export default class ServerConfig {
    * @param {Object} jsonConfig The config to validate.
    * @private
    */
-  _validate(jsonConfig) {
+  _validate(jsonConfig: any) {
     // Validate the JSON config
     try {
       this._jsonConfig = schema.validate(JSON.parse(jsonConfig)).value;

@@ -18,7 +18,7 @@ let logger = new RouteLogger('/[route_path]');
  *
  * Documentation about 'request' and 'response' can be found at the Express JS documentation (http://expressjs.com/en/4x/api.html#req).
  */
-export default function exampleHandler(request, response) {
+export default function exampleHandler(request: any, response: any) {
 
   // This gives you the running ElastalertServer instance
   let server = request.app.get('server');
@@ -41,6 +41,7 @@ export default function exampleHandler(request, response) {
     response.send(data);
 
     // Logging a successful response
+    // @ts-expect-error ts-migrate(2345) FIXME: Argument of type '{ path: string; method: string; ... Remove this comment to see the full error message
     logger.sendSuccessful(data);
   } else {
 

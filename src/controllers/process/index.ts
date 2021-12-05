@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'child_process' or its correspo... Remove this comment to see the full error message
 import { spawn, spawnSync } from 'child_process';
 import config from '../../common/config';
 import Logger from '../../common/logger';
@@ -6,11 +7,17 @@ import { Status } from '../../common/status';
 let logger = new Logger('ProcessController');
 
 export default class ProcessController {
+  _elastalertPath: any;
+  _onExitCallbacks: any;
+  _process: any;
+  _status: any;
+  _writebackIndex: any;
 
   constructor() {
     this._elastalertPath = config.get('elastalertPath');
     this._writebackIndex = config.get('writeback_index');
     this._onExitCallbacks = [];
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'IDLE' does not exist on type '(v: any) =... Remove this comment to see the full error message
     this._status = Status.IDLE;
 
     /**
@@ -20,7 +27,7 @@ export default class ProcessController {
     this._process = null;
   }
 
-  onExit(onExitCallback) {
+  onExit(onExitCallback: any) {
     this._onExitCallbacks.push(onExitCallback);
   }
 
@@ -40,6 +47,7 @@ export default class ProcessController {
 
     // Start ElastAlert from the directory specified in the config
     logger.info('Starting ElastAlert');
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'STARTING' does not exist on type '(v: an... Remove this comment to see the full error message
     this._status = Status.STARTING;
 
     // Create ElastAlert index if it doesn't exist yet
@@ -98,28 +106,31 @@ export default class ProcessController {
     });
 
     logger.info(`Started Elastalert (PID: ${this._process.pid})`);
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'READY' does not exist on type '(v: any) ... Remove this comment to see the full error message
     this._status = Status.READY;
 
     // Redirect stdin/stderr to logger
-    this._process.stdout.on('data', (data) => {
+    this._process.stdout.on('data', (data: any) => {
       logger.info(data.toString());
     });
-    this._process.stderr.on('data', (data) => {
+    this._process.stderr.on('data', (data: any) => {
       logger.error(data.toString());
     });
 
     // Set listeners for ElastAlert exit
-    this._process.on('exit', (code) => {
+    this._process.on('exit', (code: any) => {
       if (code === 0) {
         logger.info(`ElastAlert exited with code ${code}`);
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'IDLE' does not exist on type '(v: any) =... Remove this comment to see the full error message
         this._status = Status.IDLE;
       } else {
         logger.error(`ElastAlert exited with code ${code}`);
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'ERROR' does not exist on type '(v: any) ... Remove this comment to see the full error message
         this._status = Status.ERROR;
       }
       this._process = null;
 
-      this._onExitCallbacks.map(function(onExitCallback) {
+      this._onExitCallbacks.map(function(onExitCallback: any) {
         if (onExitCallback !== null) {
           onExitCallback();
         }
@@ -127,8 +138,9 @@ export default class ProcessController {
     });
 
     // Set listener for ElastAlert error
-    this._process.on('error', (err) => {
+    this._process.on('error', (err: any) => {
       logger.error(`ElastAlert error: ${err.toString()}`);
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'ERROR' does not exist on type '(v: any) ... Remove this comment to see the full error message
       this._status = Status.ERROR;
       this._process = null;
     });
@@ -141,6 +153,7 @@ export default class ProcessController {
     if (this._process !== null) {
       // Stop ElastAlert
       logger.info(`Stopping ElastAlert (PID: ${this._process.pid})`);
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'CLOSING' does not exist on type '(v: any... Remove this comment to see the full error message
       this._status = Status.CLOSING;
       this._process.kill('SIGINT');
     } else {

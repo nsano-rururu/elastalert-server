@@ -1,6 +1,8 @@
 import Logger from '../common/logger';
 
 export default class RouteLogger extends Logger {
+  _handler: any;
+  _method: any;
   constructor(handler = '', method = 'GET') {
     super('Routes');
     this._handler = handler;
@@ -11,7 +13,7 @@ export default class RouteLogger extends Logger {
     this.info('Successfully handled ' + this._method + ' request for \'' + this._handler + '\'' + (data ? (' with data: \n\n' + data) : '.'));
   }
 
-  sendFailed(error) {
+  sendFailed(error: any) {
     this.error('Request for \'' + this._handler + '\' failed with error: \n\n', error);
   }
 }

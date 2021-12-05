@@ -1,25 +1,30 @@
 import Logger from '../../common/logger';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'path' or its corresponding typ... Remove this comment to see the full error message
 import { join as joinPath } from 'path';
 import config from '../../common/config';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'child_process' or its correspo... Remove this comment to see the full error message
 import {spawn} from 'child_process';
 
 let logger = new Logger('TestController');
 
 export default class TestController {
-  constructor(server) {
+  _elastalertPath: any;
+  _server: any;
+  rulesFolder: any;
+  constructor(server: any) {
     this._server = server;
     this._elastalertPath = config.get('elastalertPath');
     this.rulesFolder = this._getRulesFolder();
   }
 
-  silenceRule(path, unit, duration) {
+  silenceRule(path: any, unit: any, duration: any) {
     const self = this;
 
     const fullPath = joinPath(self.rulesFolder, path + '.yaml');
 
     return new Promise(function (resolve, reject) {
       let processOptions = [];
-      let outputLines = [];
+      let outputLines: any = [];
 
       processOptions.push('-m', 'elastalert.elastalert', '--config', 'config.yaml');
       processOptions.push('--rule', fullPath, '--verbose', '--silence', `${unit}=${duration}`);
@@ -31,15 +36,15 @@ export default class TestController {
           cwd: self._elastalertPath
         });
 
-        testProcess.stdout.on('data', function (data) {
+        testProcess.stdout.on('data', function (data: any) {
           outputLines.push(data.toString());
         });
 
-        testProcess.stderr.on('data', function (data) {
+        testProcess.stderr.on('data', function (data: any) {
           outputLines.push(data.toString());
         });
 
-        testProcess.on('exit', function (statusCode) {
+        testProcess.on('exit', function (statusCode: any) {
           if (statusCode === 0) {
             resolve(outputLines.join('\n'));
           } else {
@@ -65,5 +70,4 @@ export default class TestController {
       return ruleFolderSettings.path;
     }
   }
-
 }

@@ -1,28 +1,37 @@
 import Logger from '../../common/logger';
 import FileSystem from '../../common/file_system';
 import config from '../../common/config';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'os' or its corresponding type ... Remove this comment to see the full error message
 import os from 'os';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'cpu-... Remove this comment to see the full error message
 import cpuStat from 'cpu-stat';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'ws'.... Remove this comment to see the full error message
 import ws from 'ws';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'path' or its corresponding typ... Remove this comment to see the full error message
 import path from 'path';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'rand... Remove this comment to see the full error message
 import randomstring from 'randomstring';
+// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'child_process' or its correspo... Remove this comment to see the full error message
 import {spawn} from 'child_process';
 
 let logger = new Logger('TestController');
 let fileSystem = new FileSystem();
 
 export default class TestController {
-  constructor(server) {
+  _elastalertPath: any;
+  _server: any;
+  testFolder: any;
+  constructor(server: any) {
     this._server = server;
     this._elastalertPath = config.get('elastalertPath');
     this.testFolder = this._getTestFolder();
 
-    fileSystem.createDirectoryIfNotExists(this.testFolder).catch(function (error) {
+    fileSystem.createDirectoryIfNotExists(this.testFolder).catch(function(this: any, error) {
       logger.error(`Failed to create the test folder in ${this.testFolder} with error:`, error);
     });
   }
 
-  testRule(rule, options, socket) {
+  testRule(rule: any, options: any, socket: any) {
     const self = this;
     let tempFileName = '~' + randomstring.generate() + '.temp';
     let tempFilePath = path.join(self.testFolder, tempFileName);
@@ -31,8 +40,8 @@ export default class TestController {
       fileSystem.writeFile(tempFilePath, rule)
         .then(function () {
           let processOptions = [];
-          let stdoutLines = [];
-          let stderrLines = [];
+          let stdoutLines: any = [];
+          let stderrLines: any = [];
 
           processOptions.push('-m', 'elastalert.test_rule', '--config', 'config.yaml', tempFilePath);
 
@@ -75,7 +84,7 @@ export default class TestController {
             // so it doesn't keep running detached
             if (socket) {
               let interval = setInterval(() => {
-                cpuStat.usagePercent((err, percent) => {
+                cpuStat.usagePercent((err: any, percent: any) => {
                   if (err) {
                     return console.error(err);
                   }
@@ -101,7 +110,7 @@ export default class TestController {
               });
             }
               
-            testProcess.stdout.on('data', function (data) {
+            testProcess.stdout.on('data', function (data: any) {
               if (socket && socket.readyState === ws.OPEN) {
                 // clean up output noise introduced in newer versions of elastalert
                 let dataStr = data.toString();
@@ -117,7 +126,7 @@ export default class TestController {
               stdoutLines.push(data.toString());
             });
 
-            testProcess.stderr.on('data', function (data) {
+            testProcess.stderr.on('data', function (data: any) {
               if (socket && socket.readyState === ws.OPEN) {
                 // clean up output noise from newer version of elastalert
                 if (!data.toString().startsWith('INFO:apscheduler.scheduler:Adding job tentatively')) {
@@ -131,7 +140,7 @@ export default class TestController {
               stderrLines.push(data.toString());
             });
 
-            testProcess.on('exit', function (statusCode) {
+            testProcess.on('exit', function (statusCode: any) {
               if (statusCode === 0) {
                 if (options.format === 'json') {
                   resolve(stdoutLines.join(''));

@@ -15,7 +15,7 @@ const optionsSchema = Joi.object().keys({
   maxResults: Joi.number().default(0)
 }).default();
 
-function analyzeRequest(request) {
+function analyzeRequest(request: any) {
   if (!request.body) {
     return new BodyNotSendError();
   }
@@ -36,7 +36,7 @@ function analyzeRequest(request) {
   return body;
 }
 
-export default function testPostHandler(request, response) {
+export default function testPostHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
@@ -49,10 +49,10 @@ export default function testPostHandler(request, response) {
   }
 
   server.testController.testRule(body.rule, body.options)
-    .then(function (consoleOutput) {
+    .then(function (consoleOutput: any) {
       response.send(consoleOutput);
     })
-    .catch(function (consoleOutput) {
+    .catch(function (consoleOutput: any) {
       response.status(500).send(consoleOutput);
     });
 }

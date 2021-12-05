@@ -1,6 +1,6 @@
 import {Status} from '../../common/status';
 
-export default function statusHandler(request, response) {
+export default function statusHandler(request: any, response: any) {
   /**
    * @type {ElastalertServer}
    */
