@@ -48,13 +48,18 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.33.0",
     "eslint": "^9.33.0",
-    "globals": "^16.3.0"
+    "globals": "^16.3.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   },
   "scripts": {
     "build": "babel src -d lib",
     "start": "sh ./scripts/start.sh",
     "update-authors": "./scripts/update-authors.sh",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "lint:fix": "./node_modules/eslint/bin/eslint.js --fix ."
+    "lint:fix": "./node_modules/eslint/bin/eslint.js --fix .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   }
 }

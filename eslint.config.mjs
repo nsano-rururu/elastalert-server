@@ -34,4 +34,12 @@ export default [{
     semi: ['error', 'always'],
     'no-console': 0,
   },
+}, {
+  files: ['**/test/**/*.js'],
+  languageOptions: {
+    globals: {
+      ...globals.node,
+      ...globals.jest,
+    },
+  },
 }];
