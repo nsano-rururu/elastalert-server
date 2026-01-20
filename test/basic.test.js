@@ -75,7 +75,7 @@ describe('Test functionality integration', () => {
   describe('File system operations (TestController functionality)', () => {
     it('should create test folder path based on data folder', () => {
       const path = require('path');
-      const TestController = require('../lib/controllers/test/index').default;
+      const TestController = require('../src/controllers/test/index').default;
       
       // Mock server object with getDataFolder method
       const mockServer = {
