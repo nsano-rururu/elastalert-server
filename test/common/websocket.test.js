@@ -1,26 +1,34 @@
 describe('WebSocket functionality - Basic Tests', () => {
-  // Mock timers to avoid issues with setInterval
-  beforeEach(() => {
+  // Set up fake timers before importing the module to capture setInterval
+  beforeAll(() => {
     jest.useFakeTimers();
   });
 
-  afterEach(() => {
+  afterAll(() => {
     jest.useRealTimers();
   });
 
   it('should be able to import websocket module', () => {
     expect(() => {
-      require('../../src/common/websocket');
+      jest.isolateModules(() => {
+        require('../../src/common/websocket');
+      });
     }).not.toThrow();
   });
 
   it('should export listen function', () => {
-    const websocket = require('../../src/common/websocket');
+    let websocket;
+    jest.isolateModules(() => {
+      websocket = require('../../src/common/websocket');
+    });
     expect(typeof websocket.listen).toBe('function');
   });
 
   it('should export wss variable', () => {
-    const websocket = require('../../src/common/websocket');
+    let websocket;
+    jest.isolateModules(() => {
+      websocket = require('../../src/common/websocket');
+    });
     expect(websocket.wss).toBeDefined();
   });
 

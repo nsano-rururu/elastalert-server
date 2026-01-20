@@ -1,18 +1,20 @@
 // Simple integration-style tests for basic functionality
+const Joi = require('joi');
+
+// Shared Joi schema used across multiple test cases
+const optionsSchema = Joi.object().keys({
+  testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
+  days: Joi.number().min(1).default(1),
+  start: Joi.string().default(''),
+  end: Joi.string().default(''),
+  alert: Joi.boolean().default(false),
+  format: Joi.string().default(''),
+  maxResults: Joi.number().default(0)
+}).default();
+
 describe('Test functionality integration', () => {
   describe('Joi validation schema (core functionality)', () => {
     it('should validate test options correctly', () => {
-      const Joi = require('joi');
-      
-      const optionsSchema = Joi.object().keys({
-        testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
-        days: Joi.number().min(1).default(1),
-        start: Joi.string().default(''),
-        end: Joi.string().default(''),
-        alert: Joi.boolean().default(false),
-        format: Joi.string().default(''),
-        maxResults: Joi.number().default(0)
-      }).default();
 
       const validOptions = {
         testType: 'all',
@@ -29,18 +31,6 @@ describe('Test functionality integration', () => {
     });
 
     it('should reject invalid testType', () => {
-      const Joi = require('joi');
-      
-      const optionsSchema = Joi.object().keys({
-        testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
-        days: Joi.number().min(1).default(1),
-        start: Joi.string().default(''),
-        end: Joi.string().default(''),
-        alert: Joi.boolean().default(false),
-        format: Joi.string().default(''),
-        maxResults: Joi.number().default(0)
-      }).default();
-
       const invalidOptions = {
         testType: 'invalid'
       };
@@ -50,18 +40,6 @@ describe('Test functionality integration', () => {
     });
 
     it('should reject negative days', () => {
-      const Joi = require('joi');
-      
-      const optionsSchema = Joi.object().keys({
-        testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
-        days: Joi.number().min(1).default(1),
-        start: Joi.string().default(''),
-        end: Joi.string().default(''),
-        alert: Joi.boolean().default(false),
-        format: Joi.string().default(''),
-        maxResults: Joi.number().default(0)
-      }).default();
-
       const invalidOptions = {
         days: -1
       };
@@ -71,18 +49,6 @@ describe('Test functionality integration', () => {
     });
 
     it('should provide correct default values', () => {
-      const Joi = require('joi');
-      
-      const optionsSchema = Joi.object().keys({
-        testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
-        days: Joi.number().min(1).default(1),
-        start: Joi.string().default(''),
-        end: Joi.string().default(''),
-        alert: Joi.boolean().default(false),
-        format: Joi.string().default(''),
-        maxResults: Joi.number().default(0)
-      }).default();
-
       const result = optionsSchema.validate({});
       expect(result.error).toBeUndefined();
       expect(result.value.testType).toBe('all');
@@ -106,19 +72,31 @@ describe('Test functionality integration', () => {
     });
   });
 
-  describe('File system operations (path handling)', () => {
-    const path = require('path');
-    
-    it('should be able to create test folder paths', () => {
-      const dataFolder = '/mock/data';
-      const testFolder = path.join(dataFolder, 'tests');
-      expect(testFolder).toBe('/mock/data/tests');
+  describe('File system operations (TestController functionality)', () => {
+    it('should create test folder path based on data folder', () => {
+      const path = require('path');
+      const TestController = require('../lib/controllers/test/index').default;
+      
+      // Mock server object with getDataFolder method
+      const mockServer = {
+        getDataFolder: () => '/mock/data'
+      };
+      
+      const controller = new TestController(mockServer);
+      expect(controller.testFolder).toBe(path.join('/mock/data', 'tests'));
     });
 
-    it('should be able to create temporary file paths', () => {
+    it('should generate unique temporary file names with proper format', () => {
+      const path = require('path');
+      const randomstring = require('randomstring');
+      
       const testFolder = '/mock/tests';
-      const tempFile = path.join(testFolder, '~mockrandom.temp');
-      expect(tempFile).toBe('/mock/tests/~mockrandom.temp');
+      const randomStr = randomstring.generate();
+      const tempFileName = '~' + randomStr + '.temp';
+      const tempFilePath = path.join(testFolder, tempFileName);
+      
+      expect(tempFileName).toMatch(/^~[a-zA-Z0-9]+\.temp$/);
+      expect(tempFilePath).toBe(`/mock/tests/${tempFileName}`);
     });
   });
 });
