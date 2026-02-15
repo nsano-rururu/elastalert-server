@@ -65,7 +65,7 @@ export async function getClientVersion() {
       auth = `${config.get('es_username')}:${config.get('es_password')}@`;
     }
 
-    const agent  = {};
+    const agent: any = {};
 
     if (config.get('es_ssl')) {
       agent.rejectUnauthorized = config.get('ea_verify_certs');
@@ -107,7 +107,7 @@ export async function clientSearch(index, type, qs, request, response) {
 
     if (es_version >= 8) {
       try {
-        const result = await client.search({
+        const result = await (client as any).search({
           index: index,
           from: request.query.from || 0,
           size: request.query.size || 100,
@@ -130,7 +130,7 @@ export async function clientSearch(index, type, qs, request, response) {
         });
       }
     } else {
-      client.search({
+      (client as any).search({
         index: index,
         type: type,
         body: {
@@ -170,7 +170,7 @@ export async function getClient() {
     const es_version = await getClientVersion();
 
     let scheme = 'http';
-    let ssl_body = {};
+    let ssl_body: any = {};
 
     if (config.get('es_ssl')) {
       scheme = 'https';

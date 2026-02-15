@@ -13,6 +13,9 @@ const devConfigPath = path.join(process.cwd(), devConfigFile);
 const logger = new Logger('Config');
 
 export default class ServerConfig {
+  _waitList: any[];
+  _jsonConfig: any;
+  
   constructor() {
     // ready() callbacks
     this._waitList = [];
@@ -49,7 +52,7 @@ export default class ServerConfig {
 
     //TODO: Watch config file for changes and reload
     const self = this;
-    return new Promise(function (resolve) {
+    return new Promise<void>(function (resolve) {
       self._getConfig().then(function (config) {
         self._validate(config);
         resolve();
@@ -108,7 +111,7 @@ export default class ServerConfig {
     return new Promise(function (resolve) {
       // Check if the config file exists and has reading permissions
       try {
-        fs.access(filePath, fs.F_OK | fs.R_OK, function (error) {
+        fs.access(filePath, (fs as any).F_OK | (fs as any).R_OK, function (error) {
           if (error) {
             if (error.errno === -2) {
               logger.info(`No ${path.basename(filePath)} file was found in ${filePath}.`);

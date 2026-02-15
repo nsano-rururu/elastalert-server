@@ -121,7 +121,7 @@ export async function metadataElastalertHandler(request, response) {
 
     if (es_version >= 8) {
       try {
-        const result = await client.search({
+        const result = await (client as any).search({
           index: index,
           from: request.query.from || 0,
           size: request.query.size || 100,
@@ -151,7 +151,7 @@ export async function metadataElastalertHandler(request, response) {
         });
       }
     } else {
-      client.search({
+      (client as any).search({
         index: index,
         type: type,
         body: {

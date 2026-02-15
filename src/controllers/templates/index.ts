@@ -9,6 +9,9 @@ import {TemplateNotFoundError, TemplateNotReadableError, TemplateNotWritableErro
 let logger = new Logger('TemplatesController');
 
 export default class TemplatesController {
+  _fileSystemController: any;
+  templatesFolder: any;
+  
   constructor() {
     this._fileSystemController = new FileSystem();
     this.templatesFolder = this._getTemplatesFolder();
@@ -70,7 +73,7 @@ export default class TemplatesController {
     const self = this;
     return new Promise(function (resolve, reject) {
       self._findTemplate(id)
-        .then(function (access) {
+        .then(function (access: any) {
           console.log('template resolved');
           resolve({
             get: function () {

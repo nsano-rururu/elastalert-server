@@ -12,6 +12,10 @@ let logger = new Logger('TestController');
 let fileSystem = new FileSystem();
 
 export default class TestController {
+  _server: any;
+  _elastalertPath: any;
+  testFolder: any;
+  
   constructor(server) {
     this._server = server;
     this._elastalertPath = config.get('elastalertPath');

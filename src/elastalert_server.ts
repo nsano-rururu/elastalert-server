@@ -17,6 +17,18 @@ import cors from 'cors';
 let logger = new Logger('Server');
 
 export default class ElastalertServer {
+  _express: any;
+  _runningTimeouts: any[];
+  _processController: any;
+  _rulesController: any;
+  _templatesController: any;
+  _foldersController: any;
+  _configController: any;
+  _fileSystemController: any;
+  _testController: any;
+  _silenceController: any;
+  _runningServer: any;
+  
   constructor() {
     this._express = express();
     this._runningTimeouts = [];
@@ -96,7 +108,7 @@ export default class ElastalertServer {
         self._foldersController = new FoldersController();
         self._testController = new TestController(self);
         self._silenceController = new SilenceController(self);
-        self._configController = new ConfigController(self);
+        self._configController = new ConfigController();
 
         self._fileSystemController.createDirectoryIfNotExists(self.getDataFolder()).catch(function (error) {
           logger.error('Error creating data folder with error:', error);

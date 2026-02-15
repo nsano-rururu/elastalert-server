@@ -6,6 +6,11 @@ import { Status } from '../../common/status';
 let logger = new Logger('ProcessController');
 
 export default class ProcessController {
+  _elastalertPath: any;
+  _writebackIndex: any;
+  _onExitCallbacks: any[];
+  _status: any;
+  _process: any;
 
   constructor() {
     this._elastalertPath = config.get('elastalertPath');

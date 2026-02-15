@@ -6,6 +6,10 @@ import {spawn} from 'child_process';
 let logger = new Logger('TestController');
 
 export default class TestController {
+  _server: any;
+  _elastalertPath: any;
+  rulesFolder: any;
+  
   constructor(server) {
     this._server = server;
     this._elastalertPath = config.get('elastalertPath');

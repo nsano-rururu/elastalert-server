@@ -78,7 +78,7 @@ export default class FileSystem {
   createDirectoryIfNotExists(pathToFolder) {
     let self = this;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise<void>(function (resolve, reject) {
       self.directoryExists(pathToFolder).then(function (exists) {
         if (!exists) {
           fs.mkdir(pathToFolder, { recursive: true }, function (error) {
@@ -96,7 +96,7 @@ export default class FileSystem {
   }
 
   deleteDirectory(path) {
-    return new Promise(function (resolve, reject) {
+    return new Promise<void>(function (resolve, reject) {
       fs_extra.remove(path, function (error) {
         error ? reject(error) : resolve();
       });
@@ -116,7 +116,7 @@ export default class FileSystem {
   }
 
   writeFile(path, content = '') {
-    return new Promise(function (resolve, reject) {
+    return new Promise<void>(function (resolve, reject) {
       try {
         fs.writeFile(path, content, function (error) {
           error ? reject(error) : resolve();
@@ -129,7 +129,7 @@ export default class FileSystem {
   }
 
   deleteFile(path) {
-    return new Promise(function (resolve, reject) {
+    return new Promise<void>(function (resolve, reject) {
       fs.unlink(path, function (error) {
         error ? reject(error) : resolve();
       });
@@ -146,7 +146,7 @@ export default class FileSystem {
   _exists(path) {
     return new Promise(function (resolve, reject) {
       try {
-        fs.access(path, fs.F_OK, function (error) {
+        fs.access(path, (fs as any).F_OK, function (error) {
           error ? resolve(false) : resolve(true);
         });
       } catch (error) {

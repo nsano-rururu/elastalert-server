@@ -1,13 +1,18 @@
 import RouteLogger from '../../routes/route_logger';
 import {sendRequestError} from '../../common/errors/utils';
-import {BodyNotSendError, OptionsInvalidError} from '../../common/errors/silence_request_errors';
+import {BodyNotSendError, RuleNotSendError, OptionsInvalidError} from '../../common/errors/test_request_errors';
 import Joi from 'joi';
 
-let logger = new RouteLogger('/silence', 'POST');
+let logger = new RouteLogger('/test', 'POST');
 
 const optionsSchema = Joi.object().keys({
-  unit: Joi.string().valid('seconds', 'minutes', 'hours', 'days', 'weeks').default('minutes'),
-  duration: Joi.number().min(1).default(1),
+  testType: Joi.string().valid('all', 'schemaOnly', 'countOnly').default('all'),
+  days: Joi.number().min(1).default(1),
+  start: Joi.string().default(''),
+  end: Joi.string().default(''),
+  alert: Joi.boolean().default(false),
+  format: Joi.string().default(''),
+  maxResults: Joi.number().default(0)
 }).default();
 
 function analyzeRequest(request) {
@@ -15,20 +20,23 @@ function analyzeRequest(request) {
     return new BodyNotSendError();
   }
 
-  const validationResult = optionsSchema.validate(request.body);
+  if (!request.body.rule) {
+    return new RuleNotSendError();
+  }
+
+  const validationResult = optionsSchema.validate(request.body.options);
 
   if (validationResult.error) {
     return new OptionsInvalidError(validationResult.error);
   }
 
   let body = request.body;
-  body.unit = validationResult.value.unit;
-  body.duration = validationResult.value.duration;
+  body.options = validationResult.value;
 
   return body;
 }
 
-export default function silencePostHandler(request, response) {
+export default function testPostHandler(request, response) {
   /**
    * @type {ElastalertServer}
    */
@@ -38,13 +46,10 @@ export default function silencePostHandler(request, response) {
   if (body.error) {
     logger.sendFailed(body.error);
     sendRequestError(response, body.error);
+    return;
   }
 
-  let pathParts = request.originalUrl.split('/');
-  let pathIndex = pathParts.indexOf('silence') + 1;
-  let path = pathParts.slice(pathIndex).join('/');
-
-  server.silenceController.silenceRule(path, body.unit, body.duration)
+  server.testController.testRule(body.rule, body.options)
     .then(function (consoleOutput) {
       response.send(consoleOutput);
     })
