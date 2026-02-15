@@ -18,7 +18,7 @@ export default class TestController {
   
   constructor(server) {
     this._server = server;
-    this._elastalertPath = config.get('elastalert Path');
+    this._elastalertPath = config.get('elastalertPath');
     this.testFolder = this._getTestFolder();
 
     fileSystem.createDirectoryIfNotExists(this.testFolder).catch(function (error) {

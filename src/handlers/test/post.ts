@@ -46,6 +46,7 @@ export default function testPostHandler(request, response) {
   if (body.error) {
     logger.sendFailed(body.error);
     sendRequestError(response, body.error);
+    return;
   }
 
   server.testController.testRule(body.rule, body.options)

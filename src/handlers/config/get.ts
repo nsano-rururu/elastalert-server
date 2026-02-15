@@ -14,6 +14,4 @@ export default function configGetHandler(request, response) {
     .catch(function (error) {
       sendRequestError(response, error);
     });
-
-  logger.sendSuccessful();
 }
