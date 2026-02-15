@@ -1,6 +1,6 @@
 import Enum from './enum';
 
-export const Status = Enum({
+export const Status: any = Enum({
   SETUP: 0,
   READY: 1,
   ERROR: 2,

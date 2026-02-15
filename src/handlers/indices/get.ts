@@ -1,36 +1,36 @@
 import { getClient, getClientVersion } from '../../common/elasticsearch_client';
 
-export default async function searchHandler(request, response) {
+export default async function indicesHandler(request, response) {
   /**
    * @type {ElastalertServer}
    */
   try {
     const client = await getClient();
     const es_version = await getClientVersion();
-    
+
     if (es_version >= 8) {
       try {
-        const result = await client.search({
-          index: request.params.index,
-          body: request.body
+        const result = await (client.cat as any).indices({
+          h: ['index']
         });
-        response.send(result);
+        let indices = result.trim().split('\n');
+        response.send(indices);
       } catch (err) {
         response.send({
           error: err
         });
       }
     } else {
-      client.search({
-        index: request.params.index,
-        body: request.body
+      (client.cat as any).indices({
+        h: ['index']
       }, (err, {body}) => {
         if (err)  {
           response.send({
             error: err
           });
         } else {
-          response.send(body);
+          let indices = body.trim().split('\n');
+          response.send(indices);
         }
       });
     }

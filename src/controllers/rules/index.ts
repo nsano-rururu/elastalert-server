@@ -11,6 +11,9 @@ import {
 let logger = new Logger('RulesController');
 
 export default class RulesController {
+  _fileSystemController: any;
+  rulesFolder: any;
+  
   constructor() {
     this._fileSystemController = new FileSystem();
     this.rulesFolder = this._getRulesFolder();
@@ -72,7 +75,7 @@ export default class RulesController {
     const self = this;
     return new Promise(function(resolve, reject) {
       self._findRule(id)
-        .then(function(access) {
+        .then(function(access: any) {
           resolve({
             get: function() {
               if (access.read) {
@@ -87,7 +90,7 @@ export default class RulesController {
               return self._getErrorPromise(new RuleNotWritableError(id));
             },
             delete: function() {
-              return self._deleteRule(id, path);
+              return self._deleteRule(id);
             }
           });
         })

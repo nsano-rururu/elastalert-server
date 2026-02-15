@@ -8,6 +8,8 @@ import config from '../../common/config';
 let logger = new Logger('ConfigController');
 
 export default class ConfigController {
+  _fileSystemController: any;
+  
   constructor() {
     this._fileSystemController = new FileSystem();
   }

@@ -1,17 +1,18 @@
 import { getClient, getClientVersion } from '../../common/elasticsearch_client';
 
-export default async function mappingHandler(request, response) {
+export default async function searchHandler(request, response) {
   /**
    * @type {ElastalertServer}
    */
   try {
     const client = await getClient();
     const es_version = await getClientVersion();
-
+    
     if (es_version >= 8) {
       try {
-        const result = await client.indices.getMapping({
-          index: request.params.index
+        const result = await (client as any).search({
+          index: request.params.index,
+          body: request.body
         });
         response.send(result);
       } catch (err) {
@@ -20,8 +21,9 @@ export default async function mappingHandler(request, response) {
         });
       }
     } else {
-      client.indices.getMapping({
-        index: request.params.index
+      (client as any).search({
+        index: request.params.index,
+        body: request.body
       }, (err, {body}) => {
         if (err)  {
           response.send({
@@ -34,6 +36,6 @@ export default async function mappingHandler(request, response) {
     }
   } catch (error) {
     console.log(error);
-  } 
+  }
 
 }

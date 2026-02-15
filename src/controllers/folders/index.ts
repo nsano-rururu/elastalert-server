@@ -3,6 +3,10 @@ import FileSystem from '../../common/file_system';
 import config from '../../common/config';
 
 export default class TemplatesController {
+  _fileSystemController: any;
+  templatesFolder: any;
+  rulesFolder: any;
+  
   constructor() {
     this._fileSystemController = new FileSystem();
     this.templatesFolder = this._getTemplatesFolder();

@@ -1,6 +1,8 @@
 import bunyan from './bunyan_instance';
 
 export default class Logger {
+  serviceName: any;
+  
   constructor (serviceName) {
     this.serviceName = serviceName;
   }
