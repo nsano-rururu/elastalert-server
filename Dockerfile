@@ -15,7 +15,7 @@ RUN apk add --update --no-cache wget unzip && \
     mv e* "${ELASTALERT_HOME}"
 
 # Stage 2: Install Dependencies
-FROM node:24.22.1-alpine3.24 AS install
+FROM node:24.22.2-alpine3.24 AS install
 ENV PATH=/home/node/.local/bin:$PATH
 
 RUN apk add --update --no-cache \
@@ -41,7 +41,7 @@ WORKDIR /opt/elastalert-server
 COPY . /opt/elastalert-server
 
 RUN npm install --omit=dev --quiet && \
-    pip3 install --no-cache-dir --upgrade pip==26.0.1 --break-system-packages
+    pip3 install --no-cache-dir --upgrade pip==26.2.2 --break-system-packages
 
 USER node
 
@@ -55,7 +55,7 @@ RUN pip3 install --no-cache-dir cryptography \
       --break-system-packages
 
 # Stage 3: Final Image
-FROM node:24.22.1-alpine3.24
+FROM node:24.22.2-alpine3.24
 LABEL maintainer="John Susek <john@johnsolo.net>"
 ENV TZ=Etc/UTC
 ENV PATH=/home/node/.local/bin:$PATH
