@@ -37,7 +37,7 @@ export default function silencePostHandler(request, response) {
 
   if (body.error) {
     logger.sendFailed(body.error);
-    sendRequestError(response, body.error);
+    return sendRequestError(response, body.error);
   }
 
   let path = request.params.path.join('/');
@@ -46,7 +46,7 @@ export default function silencePostHandler(request, response) {
     .then(function (consoleOutput) {
       response.send(consoleOutput);
     })
-    .catch(function (consoleOutput) {
-      response.status(500).send(consoleOutput);
+    .catch(function (error) {
+      sendRequestError(response, error);
     });
 }

@@ -55,7 +55,7 @@ make build
 ```
 which is equivalent of
 ```
-docker pull python:3.14-alpine3.24 && docker pull node:24.22.2-alpine3.24
+docker pull python:3.14-alpine3.24 && docker pull node:24.22.3-alpine3.24
 docker build -t elastalert-server .
 ```
 
@@ -288,6 +288,11 @@ This server exposes the following REST API's:
 
     Allows you to edit the ElastAlert 2 configuration from `config.yaml` in `elastalertPath` (from the config). The required body to be send will be edited when the work on this API is done.
         
+## Security
+- Run it on an internal network only. There is no built-in authentication.
+- The API sends no CORS headers and rejects any POST that is not `application/json` with 415. Serve the UI from the same origin, for example through a reverse proxy.
+- The websocket rejects browser connections whose `Origin` does not match the `Host` or `X-Forwarded-Host` header. A reverse proxy in front of it must pass one of them with the port the browser used.
+
 ## Contributing
 Want to contribute to this project? Great! Please read our [contributing guidelines](CONTRIBUTING.md) before submitting an issue or a pull request.
 
